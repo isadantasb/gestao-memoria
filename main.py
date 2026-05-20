@@ -1,7 +1,10 @@
 import sys
+from memoria import *
+from algoritmos import *
 
-if len(sys.argv) < 1:
-    print("usage main.py textfile.txt")
+if len(sys.argv) < 3:
+    print("usage: python main.py [first|best|worst|buddy] entrada.txt")
+    sys.exit(1)
 
 def le_arquivo(arq_entrada):
     requisicoes = []
@@ -33,10 +36,14 @@ def le_arquivo(arq_entrada):
 
 
 def main():
-    a, b, c = le_arquivo(sys.argv[-1])
-    print(a)
-    print(b)
-    print(c)
+    num_processos, pids, requisicoes = le_arquivo(sys.argv[-1])
+    memoria = Memoria()
+    tabela = TabelaParticoes()
+    for req in requisicoes:
+        pass
+    resultado = aloca(memoria, tabela, "pid", 10, first) #testando
+    print(resultado)
+    print (memoria.enderecos)
 
 
 if __name__ == "__main__":
