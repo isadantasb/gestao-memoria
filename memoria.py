@@ -14,8 +14,10 @@ class MMU:
         self.estrategia = estrategia
         self.tabela_processos = {}
 
-    def aloca(self, id_processo, tamanho):
-        pass
+    def aloca(self, id_processo, endereco, tam):
+        
+        for i in range(endereco, endereco + tam) :
+            self.memoria.enderecos[i] = id_processo
 
     def desaloca(self, id_processo):
         pass
@@ -40,7 +42,8 @@ class TabelaParticoes:
 
     def remover(self, pid):
         if pid in self.particoes:
-            pass
+            self.particoes.pop(pid)
+            
 
     def buscar(self, pid):
         return self.particoes[pid]

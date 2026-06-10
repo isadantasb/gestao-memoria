@@ -33,8 +33,13 @@ def best(memoria, tamanho):
                     bloco_min = cont
                     endereco = ini
             cont = 0
+    if bloco_min == memoria.tam + 1:
+        return None
+    else:
 
-    return endereco
+        fim = endereco + tamanho
+
+        return endereco, fim
 
 def worst(memoria, tamanho):
     '''
@@ -55,11 +60,19 @@ def worst(memoria, tamanho):
                     bloco_max = cont
                     endereco = ini
             cont = 0
+    if bloco_max == -1:
+        return None
 
-    return endereco
+    else:
+        fim = endereco + tamanho
+        return endereco, fim
 
-def buddy():
-    pass
+def buddy(tamanho):
+    res = 2
+    while tamanho > res:
+        res = res ** 2
+    return res
+
 
 def aloca(memoria, tabela, pid, tamanho, algoritmo):
     resultado = algoritmo(memoria, tamanho)
