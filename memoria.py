@@ -9,7 +9,20 @@ class MMU:
     A implementação lógica de operação da MMU deve seguir o que foi apresentado em sala de aula
     no que tange à tradução de endereços de memória virtual por partições;
     '''
-    pass
+    def __init__(self, memoria : Memoria, estrategia):
+        self.memoria = memoria
+        self.estrategia = estrategia
+        self.tabela_processos = {}
+
+    def aloca(self, id_processo, tamanho):
+        pass
+
+    def desaloca(self, id_processo):
+        pass
+
+    def traduzir(self, id_processo, endereco_logico):
+        pass
+
 
 class TabelaParticoes:
     '''tabela única utilizada pelo SO que mantém o registro das partições já alocadas, 
@@ -31,3 +44,4 @@ class TabelaParticoes:
 
     def buscar(self, pid):
         return self.particoes[pid]
+    
