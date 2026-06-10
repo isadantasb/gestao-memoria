@@ -1,3 +1,5 @@
+from memoria import Memoria
+
 def first(memoria, tamanho):
     cont = 0
     ini = 0
@@ -13,11 +15,48 @@ def first(memoria, tamanho):
             cont = 0
     return None
 
-def best():
-    pass
+def best(memoria, tamanho):
+    '''
+    '''
+    cont = 0
+    ini = 0
+    bloco_min = memoria.tam + 1
+    endereco = -1
+    for i in range(memoria.tam ):
+        if memoria.enderecos[i] is None:
+            if cont == 0:
+                ini = i
+            cont += 1
+        else:
+            if cont >= tamanho:
+                if cont < bloco_min:
+                    bloco_min = cont
+                    endereco = ini
+            cont = 0
 
-def worst():
-    pass
+    return endereco
+
+def worst(memoria, tamanho):
+    '''
+    '''
+    cont = 0
+    ini = 0
+    bloco_max = -1
+    endereco = -1
+    for i in range(memoria.tam):
+        
+        if memoria.enderecos[i] is None:
+            if cont == 0:
+                ini = i
+            cont += 1
+        else:
+            if cont >= tamanho:
+                if cont > bloco_max:
+                    bloco_max = cont
+                    endereco = ini
+            cont = 0
+
+    return endereco
 
 def buddy():
     pass
