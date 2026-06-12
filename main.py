@@ -1,6 +1,14 @@
 import sys
 from memoria import *
 from algoritmos import *
+from collections.abc import Callable
+
+ESTRATEGIAS = {
+    'first': first,
+    'best': best,
+    'worst': worst,
+}
+
 
 if len(sys.argv) < 3:
     print("usage: python main.py [first|best|worst|buddy] entrada.txt")
@@ -20,7 +28,6 @@ def le_arquivo(arq_entrada):
             partes = linha.split()
             comando = partes[0]
             pid = partes[1]
-
             if comando == 'aloca':
                 tam = int(partes[-1])
                 requisicoes.append({'comando': 'aloca', 'pid': pid, 'valor': tam})
@@ -39,11 +46,23 @@ def main():
     num_processos, pids, requisicoes = le_arquivo(sys.argv[-1])
     memoria = Memoria()
     tabela = TabelaParticoes()
+    nome_estrategia = sys.argv[1]
+    if nome_estrategia not in ESTRATEGIAS:
+        print("Estratégia de alocação inválida. Use 'first', 'best' ou 'worst'.")
+        sys.exit(1)
+    estrategia : Callable = ESTRATEGIAS[nome_estrategia]
+
+    mmu = MMU(memoria, estrategia)
     for req in requisicoes:
-        pass
-    resultado = aloca(memoria, tabela, "pid", 10, first) #testando
-    print(resultado)
-    print (memoria.enderecos)
+        if req['comando'] == 'aloca':
+            mmu.aloca(req['pid'], req['valor'])
+        elif req['comando'] == 'libera':
+            mmu.desaloca(req['pid'])
+        elif req['comando'] == 'acessa':
+            valor = mmu.traduz(req['pid'], req['valor'])
+            print(f"Processo {req['pid']} acessou o endereço lógico {req['valor']} e o endereço físico é {valor}.")
+        
+        
 
 
 if __name__ == "__main__":

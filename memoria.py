@@ -1,9 +1,9 @@
 from algoritmos import *
-
+from collections.abc import Callable
 
 class Memoria:
     def __init__(self):
-        self.tam: int = 1000 #mudei so pra printa mais facil
+        self.tam: int = 4096 #mudei so pra printa mais facil
         self.enderecos = [None] * self.tam
 
 class MMU:
@@ -13,36 +13,47 @@ class MMU:
     no que tange à tradução de endereços de memória virtual por partições;
     '''
     def __init__(self, memoria : Memoria, estrategia):
+        if estrategia not in [first, best, worst]:
+            raise ValueError("Estratégia de alocação inválida.")
         self.memoria = memoria
-        self.estrategia = estrategia
+        self.estrategia: Callable = estrategia
         self.tabela_processos = {}
+        
 
-    def aloca(self, id_processo: str, endereco: int, tam: int):
+    def aloca(self, id_processo, tam):
         '''
         Requisicao de alocacao de um processo na memoria, utilizando o algoritmo de alocacao definido.
         '''
         novo_tam = tam
         if tam <= 0 or (tam & (tam - 1)) != 0:
+            print(tam)
             novo_tam = buddy(tam)
-        
-        while self.estrategia(self.memoria, novo_tam) is None: # tem que ve se esse self.estrategia funciona
+        endereco = self.estrategia(self.memoria, novo_tam)
+        print("endereco", endereco)
+        while endereco is None: # tem que ve se esse self.estrategia funciona
             novo_tam *= 2
+            print("novo tamanho",novo_tam)
             if novo_tam > self.memoria.tam:
                 raise Exception("Não há espaço suficiente para alocar o processo.")
-
+            endereco = self.estrategia(self.memoria, novo_tam)
+        
+        
         for i in range(endereco, endereco + tam):
             self.memoria.enderecos[i] = id_processo
 
         self.tabela_processos[id_processo] = (endereco, novo_tam)
+        print(f"Processo {id_processo} alocado no endereço {endereco} com tamanho {novo_tam}.")
 
 
     def desaloca(self, id_processo: str):
         '''
         Requisicao de liberacao de um processo na memoria, liberando os enderecos alocados para o processo.
         '''
+        print(f"Processo {id_processo} desalocado dos enderecos {self.tabela_processos[id_processo][0]} a {self.tabela_processos[id_processo][0] + self.tabela_processos[id_processo][1] - 1}.")
         for i in range(self.memoria.tam):
             if self.memoria.enderecos[i] == id_processo:
                 self.memoria.enderecos[i] = None
+        
 
     def traduz(self, id_processo: str, endereco_logico: int) -> int:
         '''

@@ -1,5 +1,3 @@
-from memoria import Memoria
-
 def first(memoria, tamanho):
     cont = 0
     ini = 0
@@ -9,8 +7,7 @@ def first(memoria, tamanho):
                 ini = i
             cont += 1
             if cont == tamanho:
-                fim = i
-                return ini, fim
+                return ini
         else: 
             cont = 0
     return None
@@ -36,10 +33,7 @@ def best(memoria, tamanho):
     if bloco_min == memoria.tam + 1:
         return None
     else:
-
-        fim = endereco + tamanho
-
-        return endereco, fim
+        return endereco
 
 def worst(memoria, tamanho):
     '''
@@ -62,24 +56,13 @@ def worst(memoria, tamanho):
             cont = 0
     if bloco_max == -1:
         return None
-
     else:
-        fim = endereco + tamanho
-        return endereco, fim
+        return endereco
 
 def buddy(tamanho):
     res = 2
     while tamanho > res:
-        res = res ** 2
+        res = res << 1
+        print(res)
     return res
 
-
-def aloca(memoria, tabela, pid, tamanho, algoritmo):
-    resultado = algoritmo(memoria, tamanho)
-    if resultado is None:
-        return None 
-    ini, fim = resultado
-    for i in range(ini, fim + 1):
-        memoria.enderecos[i] = pid
-    tabela.adicionar(pid, ini, fim, tamanho)
-    return ini, fim
