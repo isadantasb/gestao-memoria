@@ -3,7 +3,7 @@ from collections.abc import Callable
 
 class Memoria:
     def __init__(self):
-        self.tam: int = 4096 #mudei so pra printa mais facil
+        self.tam: int = 4096 
         self.enderecos = [None] * self.tam
 
 class MMU:
@@ -28,24 +28,19 @@ class MMU:
         if self.estrategia == buddy: 
             novo_tam = buddy (self.memoria, tam)
         endereco = self.estrategia(self.memoria, novo_tam)
-        print("endereco", endereco)
         if self.estrategia == buddy:
             while endereco is None: # tem que ve se esse self.estrategia funciona
                 novo_tam *= 2
-                print("novo tamanho",novo_tam)
                 if novo_tam > self.memoria.tam:
-                    print("Não há espaço suficiente para alocar o processo.")
                     return None, None
                 endereco = self.estrategia(self.memoria, novo_tam)
         else:
             if endereco is None:
-                print(f"Não há endereço suficiente para alocar o processo")
                 return None, None
         for i in range(endereco, endereco + tam):
             self.memoria.enderecos[i] = id_processo
 
         self.tabela_processos[id_processo] = (endereco, novo_tam)
-        print(f"Processo {id_processo} alocado no endereço {endereco} com tamanho {novo_tam}.")
         fim = endereco + novo_tam - 1
         return endereco, fim 
 
@@ -53,11 +48,9 @@ class MMU:
         '''
         Requisicao de liberacao de um processo na memoria, liberando os enderecos alocados para o processo.
         '''
-        print (f"indice 0 e 1 {self.tabela_processos[id_processo]}")
         inicio = self.tabela_processos[id_processo][0]
         tamanho = self.tabela_processos[id_processo][1]
         fim = inicio + tamanho - 1
-        print(f"Processo {id_processo} desalocado dos enderecos {inicio} a {fim}.")
         for i in range(self.memoria.tam):
             if self.memoria.enderecos[i] == id_processo:
                 self.memoria.enderecos[i] = None

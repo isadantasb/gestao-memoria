@@ -47,7 +47,6 @@ def le_arquivo(arq_entrada):
 def main():
     num_processos, pids, requisicoes = le_arquivo(sys.argv[-1])
     logs = []
-    print (f"numprocessos {num_processos} pids {pids} req {requisicoes}")
     memoria = Memoria()
     tabela = TabelaParticoes()
     nome_estrategia = sys.argv[1]

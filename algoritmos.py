@@ -13,8 +13,6 @@ def first(memoria, tamanho):
     return None
 
 def best(memoria, tamanho):
-    '''
-    '''
     cont = 0
     ini = 0
     bloco_min = memoria.tam + 1
@@ -41,8 +39,6 @@ def best(memoria, tamanho):
         return endereco
 
 def worst(memoria, tamanho):
-    '''
-    '''
     cont = 0
     ini = 0
     bloco_max = -1
@@ -59,6 +55,11 @@ def worst(memoria, tamanho):
                     bloco_max = cont
                     endereco = ini
             cont = 0
+    # verifica o último bloco livre
+    if cont >= tamanho:
+        if cont > bloco_max:
+            bloco_max = cont
+            endereco = ini
     if bloco_max == -1:
         return None
     else:
@@ -68,6 +69,5 @@ def buddy(memoria, tamanho):
     res = 2
     while tamanho > res:
         res = res << 1
-        print(res)
     return res
 
