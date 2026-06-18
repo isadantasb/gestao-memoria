@@ -13,7 +13,7 @@ class MMU:
     no que tange à tradução de endereços de memória virtual por partições;
     '''
     def __init__(self, memoria : Memoria, estrategia):
-        if estrategia not in [first, best, worst]:
+        if estrategia not in [first, best, worst, buddy]:
             raise ValueError("Estratégia de alocação inválida.")
         self.memoria = memoria
         self.estrategia: Callable = estrategia
@@ -25,19 +25,22 @@ class MMU:
         Requisicao de alocacao de um processo na memoria, utilizando o algoritmo de alocacao definido.
         '''
         novo_tam = tam
-        if tam <= 0 or (tam & (tam - 1)) != 0:
-            print(tam)
-            novo_tam = tam
+        if self.estrategia == buddy: 
+            novo_tam = buddy (self.memoria, tam)
         endereco = self.estrategia(self.memoria, novo_tam)
         print("endereco", endereco)
-        while endereco is None: # tem que ve se esse self.estrategia funciona
-            novo_tam *= 2
-            print("novo tamanho",novo_tam)
-            if novo_tam > self.memoria.tam:
-                print("Não há espaço suficiente para alocar o processo.")
+        if self.estrategia == buddy:
+            while endereco is None: # tem que ve se esse self.estrategia funciona
+                novo_tam *= 2
+                print("novo tamanho",novo_tam)
+                if novo_tam > self.memoria.tam:
+                    print("Não há espaço suficiente para alocar o processo.")
+                    return None, None
+                endereco = self.estrategia(self.memoria, novo_tam)
+        else:
+            if endereco is None:
+                print(f"Não há endereço suficiente para alocar o processo")
                 return None, None
-            endereco = self.estrategia(self.memoria, novo_tam)
-        
         for i in range(endereco, endereco + tam):
             self.memoria.enderecos[i] = id_processo
 
@@ -50,6 +53,7 @@ class MMU:
         '''
         Requisicao de liberacao de um processo na memoria, liberando os enderecos alocados para o processo.
         '''
+        print (f"indice 0 e 1 {self.tabela_processos[id_processo]}")
         inicio = self.tabela_processos[id_processo][0]
         tamanho = self.tabela_processos[id_processo][1]
         fim = inicio + tamanho - 1
