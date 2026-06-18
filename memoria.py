@@ -27,32 +27,38 @@ class MMU:
         novo_tam = tam
         if tam <= 0 or (tam & (tam - 1)) != 0:
             print(tam)
-            novo_tam = buddy(tam)
+            novo_tam = tam
         endereco = self.estrategia(self.memoria, novo_tam)
         print("endereco", endereco)
         while endereco is None: # tem que ve se esse self.estrategia funciona
             novo_tam *= 2
             print("novo tamanho",novo_tam)
             if novo_tam > self.memoria.tam:
-                raise Exception("Não há espaço suficiente para alocar o processo.")
+                print("Não há espaço suficiente para alocar o processo.")
+                return None, None
             endereco = self.estrategia(self.memoria, novo_tam)
-        
         
         for i in range(endereco, endereco + tam):
             self.memoria.enderecos[i] = id_processo
 
         self.tabela_processos[id_processo] = (endereco, novo_tam)
         print(f"Processo {id_processo} alocado no endereço {endereco} com tamanho {novo_tam}.")
-
+        fim = endereco + novo_tam - 1
+        return endereco, fim 
 
     def desaloca(self, id_processo: str):
         '''
         Requisicao de liberacao de um processo na memoria, liberando os enderecos alocados para o processo.
         '''
-        print(f"Processo {id_processo} desalocado dos enderecos {self.tabela_processos[id_processo][0]} a {self.tabela_processos[id_processo][0] + self.tabela_processos[id_processo][1] - 1}.")
+        inicio = self.tabela_processos[id_processo][0]
+        tamanho = self.tabela_processos[id_processo][1]
+        fim = inicio + tamanho - 1
+        print(f"Processo {id_processo} desalocado dos enderecos {inicio} a {fim}.")
         for i in range(self.memoria.tam):
             if self.memoria.enderecos[i] == id_processo:
                 self.memoria.enderecos[i] = None
+        del self.tabela_processos[id_processo]
+        return inicio, fim
         
 
     def traduz(self, id_processo: str, endereco_logico: int) -> int:
@@ -65,7 +71,7 @@ class MMU:
         if endereco_logico >= tamanho or endereco_logico < 0:
             raise Exception("Endereço lógico fora do limite do processo.")
         endereco_fisico = inicio + endereco_logico
-        return self.memoria.enderecos[endereco_fisico]
+        return endereco_fisico
 
 
 

@@ -11,7 +11,7 @@ ESTRATEGIAS = {
 
 
 if len(sys.argv) < 3:
-    print("usage: python main.py [first|best|worst|buddy] entrada.txt")
+    print("usage: python main.py [first|best|worst|buddy] exemplos_entrada/entrada.txt")
     sys.exit(1)
 
 def le_arquivo(arq_entrada):
@@ -44,6 +44,8 @@ def le_arquivo(arq_entrada):
 
 def main():
     num_processos, pids, requisicoes = le_arquivo(sys.argv[-1])
+    logs = []
+    print (f"numprocessos {num_processos} pids {pids} req {requisicoes}")
     memoria = Memoria()
     tabela = TabelaParticoes()
     nome_estrategia = sys.argv[1]
@@ -55,12 +57,22 @@ def main():
     mmu = MMU(memoria, estrategia)
     for req in requisicoes:
         if req['comando'] == 'aloca':
-            mmu.aloca(req['pid'], req['valor'])
+            end, fim = mmu.aloca(req['pid'], req['valor'])
+            if req['pid'] is not None:
+                logs.append(f"alocacao {req['pid']} {end} {fim}")
+            else: 
+                logs.append(f"alocacao {req['pid']} erro!")
+                break
         elif req['comando'] == 'libera':
-            mmu.desaloca(req['pid'])
+            inicio, fim= mmu.desaloca(req['pid'])
+            logs.append(f"liberacao {req['pid']} {inicio} {fim}")
         elif req['comando'] == 'acessa':
-            valor = mmu.traduz(req['pid'], req['valor'])
-            print(f"Processo {req['pid']} acessou o endereço lógico {req['valor']} e o endereço físico é {valor}.")
+            try: 
+                valor = mmu.traduz(req['pid'], req['valor'])
+                logs.append(f"acesso {req['pid']} {req['valor']} {valor}")
+            except:
+                logs.append(f"acesso {req['pid']} {req['valor']} violacao")
+    print (logs)
         
         
 
