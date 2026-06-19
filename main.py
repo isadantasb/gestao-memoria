@@ -81,7 +81,7 @@ def main():
     nome = os.path.basename(arquivo)
     nome = os.path.splitext(nome)[0]
 
-    nome_log = f"log_{nome}__{algoritmo}.txt"
+    nome_log = f"log_{nome}_{algoritmo}.txt"
     with open(nome_log, "w", encoding="utf-8") as f:
         for linha in logs:
             f.write(linha + "\n")
