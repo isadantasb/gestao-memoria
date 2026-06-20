@@ -6,84 +6,20 @@ class Memoria:
         self.tam: int = 4096 
         self.enderecos = [None] * self.tam
 
-class MMU:
-    '''
-    representação do componente da MMU para realização das traduções de endereço.
-    A implementação lógica de operação da MMU deve seguir o que foi apresentado em sala de aula
-    no que tange à tradução de endereços de memória virtual por partições;
-    '''
-    def __init__(self, memoria : Memoria, estrategia):
-        if estrategia not in [first, best, worst, buddy]:
-            raise ValueError("Estratégia de alocação inválida.")
-        self.memoria = memoria
-        self.estrategia: Callable = estrategia
-        self.tabela_processos = {}
-        
-
-    def aloca(self, id_processo, tam):
-        '''
-        Requisicao de alocacao de um processo na memoria, utilizando o algoritmo de alocacao definido.
-        '''
-        novo_tam = tam
-        if self.estrategia == buddy: 
-            novo_tam = buddy (self.memoria, tam)
-        endereco = self.estrategia(self.memoria, novo_tam)
-        if self.estrategia == buddy:
-            while endereco is None: # tem que ve se esse self.estrategia funciona
-                novo_tam *= 2
-                if novo_tam > self.memoria.tam:
-                    return None, None
-                endereco = self.estrategia(self.memoria, novo_tam)
-        else:
-            if endereco is None:
-                return None, None
-        for i in range(endereco, endereco + tam):
-            self.memoria.enderecos[i] = id_processo
-
-        self.tabela_processos[id_processo] = (endereco, novo_tam)
-        fim = endereco + novo_tam - 1
-        return endereco, fim 
-
-    def desaloca(self, id_processo: str):
-        '''
-        Requisicao de liberacao de um processo na memoria, liberando os enderecos alocados para o processo.
-        '''
-        inicio = self.tabela_processos[id_processo][0]
-        tamanho = self.tabela_processos[id_processo][1]
-        fim = inicio + tamanho - 1
-        for i in range(self.memoria.tam):
-            if self.memoria.enderecos[i] == id_processo:
-                self.memoria.enderecos[i] = None
-        del self.tabela_processos[id_processo]
-        return inicio, fim
-        
-
-    def traduz(self, id_processo: str, endereco_logico: int) -> int:
-        '''
-        Requisicao de acesso a um endereco logico
-        '''
-        if id_processo not in self.tabela_processos:
-            raise Exception("Processo não encontrado.")
-        inicio, tamanho = self.tabela_processos[id_processo]
-        if endereco_logico >= tamanho or endereco_logico < 0:
-            raise Exception("Endereço lógico fora do limite do processo.")
-        endereco_fisico = inicio + endereco_logico
-        return endereco_fisico
-
-
-
 class TabelaParticoes:
     '''tabela única utilizada pelo SO que mantém o registro das partições já alocadas, 
     armazenando os valores de limite de endereço do processo e início do endereçamento físico na memória física.
     '''
     def __init__(self):
-        self.particoes = {}
+        '''
+        self.particoes = {"pid" : {"base": int, "limite": int, "tamanho": int}}
+        '''
+        self.particoes = {} 
 
-    def adicionar(self, pid, inicio, fim, tamanho): 
+    def adicionar(self, pid, base, limite): 
         self.particoes[pid]={
-            "inicio": inicio,
-            "fim": fim,
-            "tamanho": tamanho
+            "base": base,
+            "limite": limite
         }
 
     def remover(self, pid):
@@ -94,3 +30,29 @@ class TabelaParticoes:
     def buscar(self, pid):
         return self.particoes[pid]
     
+    
+class MMU:
+    '''
+    representação do componente da MMU para realização das traduções de endereço.
+    A implementação lógica de operação da MMU deve seguir o que foi apresentado em sala de aula
+    no que tange à tradução de endereços de memória virtual por partições;
+    '''
+    def __init__(self, memoria : Memoria, tabela_particoes: TabelaParticoes):
+        self.memoria = memoria
+        self.tabela_particoes = tabela_particoes
+       
+    def traduz(self, id_processo: str, endereco_logico: int) -> int:
+        try:
+            particao = self.tabela_particoes.buscar(id_processo)
+        except KeyError:
+            raise Exception("Processo não mapeado na tabela de partições.")
+
+        base = particao["base"]
+        limite = particao["limite"]
+
+        if endereco_logico < 0 or endereco_logico >= limite:
+            raise Exception("violacao")  # 
+
+        # eL < L  ->  ef = eL + B
+        endereco_fisico = base + endereco_logico
+        return endereco_fisico
