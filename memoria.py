@@ -50,7 +50,7 @@ class MMU:
         base = particao["base"]
         limite = particao["limite"]
 
-        if endereco_logico < 0 or endereco_logico >= limite:
+        if endereco_logico < 0 or endereco_logico > limite:
             raise Exception("violacao")  # 
 
         # eL < L  ->  ef = eL + B

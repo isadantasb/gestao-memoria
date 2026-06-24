@@ -101,6 +101,7 @@ class Buddy:
         self.alocados[pid] = (endereco, bloco_tam)
         print(f"Alocando PID {pid} no endereço {endereco} com tamanho {bloco_tam}")
         print(endereco)
+        print(f'livres: {self.livres}, alocados: {self.alocados}')
         return endereco, tamanho_real
     
     def libera(self, pid):

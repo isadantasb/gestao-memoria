@@ -61,7 +61,10 @@ def aloca(pid: str, tamanho: int, mmu : MMU):
     global buddy
 
     if nome_estrategia == 'buddy':
-        endereco_inicial, tamanho_real = buddy.aloca(pid, tamanho)
+        resultado_buddy = buddy.aloca(pid, tamanho)
+        if resultado_buddy is None:
+            return None
+        endereco_inicial, tamanho_real = resultado_buddy
         endereco_final = endereco_inicial + tamanho_real - 1
         
     else:
@@ -96,12 +99,12 @@ def main():
     mmu = MMU(memoria, tabela)
     for req in requisicoes:
         if req['comando'] == 'aloca':
-            end, fim = aloca(req['pid'], req['valor'], mmu)
-            if req['pid'] is not None:
-                logs.append(f"alocacao {req['pid']} {end} {fim}")
-            else: 
+            resultado = aloca(req['pid'], req['valor'], mmu)
+            if resultado is None:
                 logs.append(f"alocacao {req['pid']} erro!")
                 break
+            end, fim = resultado
+            logs.append(f"alocacao {req['pid']} {end} {fim}")
         elif req['comando'] == 'libera':
             inicio, fim = desaloca(req['pid'], mmu)
             logs.append(f"liberacao {req['pid']} {inicio} {fim}")
@@ -118,7 +121,7 @@ def main():
     nome = os.path.splitext(nome)[0]
 
     nome_log = f"log_{nome}_{nome_estrategia}.txt"
-
+    arquivo_esperado= f"saidas_esperadas/{nome_log}"
 
 
     with open(nome_log, "w", encoding="utf-8") as f:
