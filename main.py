@@ -12,7 +12,7 @@ ESTRATEGIAS = {
 }
 
 if len(sys.argv) < 3:
-    print("usage: python main.py [first|best|worst|buddy] exemplos_entrada/entrada.txt")
+    print("usage: python main.py [first|best|worst|buddy] entrada.txt")
     sys.exit(1)
 
 arquivo = sys.argv[-1]

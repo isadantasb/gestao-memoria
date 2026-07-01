@@ -4,6 +4,10 @@ Trabalho prático desenvolvido para a disciplina 12035 - Sistemas Operacionais d
 
 Este projeto implementa operações de gestão de memória para um Sistema Operacional em um ambiente computacional simulado. A simulação utiliza a técnica de tradução de endereços lógicos para físicos via partições, gerenciando as requisições de alocação, acesso e liberação de memória em Unidades de Armazenamento (UA)
 
+## Integrantes
+- Isadora Dantas Bruchmam   | RA: 140870
+- Vinicius Taguchi Okada    | RA: 140064
+
 ## Tecnologias Utilizadas
 
 ### Linguagem
@@ -13,14 +17,16 @@ Este projeto implementa operações de gestão de memória para um Sistema Opera
 - Collections ABC 
 
 ## Funcionalidades implementadas
-- Alocação e Desalocação de processos 
+O simulador realiza a leitura e o processamento de um arquivo em formato de texto (.txt), executando sequencialmente as instruções de alocação, liberação e acesso contidas nele.
 
 ### Simulação de componentes
+O ambiente emula o comportamento integrado dos seguintes componentes de hardware e do Sistema Operacional:
 - Memória
 - MMU (Memory Management Unit)
 - Tabela de Partições
 
 ### Estratégias de Alocação
+O sistema gerencia o espaço livre e mitiga a fragmentação através de quatro algoritmos de busca distintos:
 - Best-fit
 - Worst-fit
 - First-fit
@@ -36,4 +42,9 @@ Este projeto implementa operações de gestão de memória para um Sistema Opera
 A aplicação é executada via terminal, exigindo a passagem de dois parâmetros: A estratégia de alocação; O caminho para o arquivo que contém as instruções de entrada
 
 ```bash
-python main.py [first|best|worst|buddy] exemplos_entrada/entrada.txt
+python main.py [first|best|worst|buddy] entrada.txt
+``` 
+-Exemplo:
+```bash
+python main.py first entrada001.txt
+```
