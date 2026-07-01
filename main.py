@@ -114,26 +114,14 @@ def main():
                 logs.append(f"acesso {req['pid']} {req['valor']} {valor}")
             except:
                 logs.append(f"acesso {req['pid']} {req['valor']} violacao")
-    print(logs)
+
         
 
     nome = os.path.basename(arquivo)
     nome = os.path.splitext(nome)[0]
 
     nome_log = f"log_{nome}_{nome_estrategia}.txt"
-    arquivo_esperado= f"saidas_esperadas/{nome_log}"
-
-
-    with open(nome_log, "w", encoding="utf-8") as f:
-        for linha in logs:
-            f.write(linha + "\n")
-
-    print("-----------------------------")
-    print("tabela de partições:")
-    print(mmu.tabela_particoes.particoes)
-    print("-----------------------------")
-
-
+    
 
 if __name__ == "__main__":
     main()

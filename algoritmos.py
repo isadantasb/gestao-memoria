@@ -55,7 +55,6 @@ def worst(memoria, tamanho):
                     bloco_max = cont
                     endereco = ini
             cont = 0
-    # verifica o último bloco livre
     if cont >= tamanho:
         if cont > bloco_max:
             bloco_max = cont
@@ -99,9 +98,6 @@ class Buddy:
             bloco_tam = metade
             
         self.alocados[pid] = (endereco, bloco_tam)
-        print(f"Alocando PID {pid} no endereço {endereco} com tamanho {bloco_tam}")
-        print(endereco)
-        print(f'livres: {self.livres}, alocados: {self.alocados}')
         return endereco, tamanho_real
     
     def libera(self, pid):

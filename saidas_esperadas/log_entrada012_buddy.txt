@@ -4,5 +4,5 @@ alocacao p03 768 1023
 alocacao p04 1024 1279
 liberacao p01 0 511
 liberacao p03 768 1023
-alocacao p05 0 63
-alocacao p06 64 95
+alocacao p05 640 703
+alocacao p06 704 735
